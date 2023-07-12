@@ -6,12 +6,13 @@ if __name__ == "__main__":
     print(cv2.__version__)
     processor.gen_board()
     video = cv2.VideoCapture(0)
+    target_ids = [1, 2, 3, 4, 5, 6, 7, 8]
     while True:
         ret, frame = video.read()
         if not ret:
             print("Cannot get camera read")
             exit()
-        cv2.imshow("frame", processor.process_frame(frame, True))
+        cv2.imshow("camera", processor.process_frame(frame, True, target_ids))
         if cv2.waitKey(1) == ord("q"):
             break
     exit()
