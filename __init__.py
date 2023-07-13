@@ -12,7 +12,8 @@ if __name__ == "__main__":
         if not ret:
             print("Cannot get camera read")
             exit()
-        cv2.imshow("camera", processor.process_frame(frame, True, target_ids))
+        processor.filter_ids(target_ids)
+        cv2.imshow("camera", processor.process_frame(frame, True))
         if cv2.waitKey(1) == ord("q"):
             break
     exit()
