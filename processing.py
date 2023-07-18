@@ -27,8 +27,9 @@ class Processing:
         img = cv2.aruco.drawPlanarBoard(self._charuco_board, (1280, 720), 0, 1)
         cv2.imshow("checker board", img)
 
-    def filter_ids(self, target_ids: List[int], ):
-
+    def filter_ids(self, target_ids: List[int], ) -> numpy.array:
+        if self.corners or self.ids is None:
+            return
         # Filter the detected markers based on target_ids
         for corner, marker_id in zip(self.corners, self.ids):
             if marker_id in target_ids:
@@ -36,9 +37,11 @@ class Processing:
                 self.filtered_ids.append(marker_id)
 
         self.ids_filtered = True
+        return
 
     def get_corners(self, image: numpy.array):
         (self.corners, self.ids, self.rejected) = self._aruco_detector.detectMarkers(image)
+        return
 
     def get_filtered_corners(self) -> []:
         return self.filtered_corners
@@ -47,12 +50,8 @@ class Processing:
         if self._imsize is None:
             self._imsize = (image.shape[0], image.shape[1])
 
-        self.get_corners(image)
-
         if len(self.filtered_corners) > 0:
             cv2.aruco.drawDetectedMarkers(image, self.filtered_corners)
-
-            filtered_ids = numpy.array(self.filtered_ids)  # Convert to a NumPy array to prevent overload error
 
             (retval, charuco_corners, charuco_ids) = cv2.aruco.interpolateCornersCharuco(
                 self.filtered_corners, filtered_ids, image, self._charuco_board)
