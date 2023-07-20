@@ -11,7 +11,7 @@ class Processing:
     _imsize = None
 
     def __init__(self) -> None:
-        self._aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_5X5_1000)
+        self._aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_APRILTAG_16H5)
         self._aruco_detector = aruco.ArucoDetector(self._aruco_dict)
         self._charuco_board = aruco.CharucoBoard(
             (10, 9), 0.030, 0.023, self._aruco_dict)
@@ -20,11 +20,12 @@ class Processing:
         img = cv2.aruco.drawPlanarBoard(self._charuco_board, (1280, 720), 0, 1)
         cv2.imshow("board", img)
 
-    def process_frame(self, image: numpy.array, save: bool) -> numpy.array:
+    def find_corners(self, image: numpy.array, save: bool) -> numpy.array:
         if self._imsize is None:
             self._imsize = (image.shape[0], image.shape[1])
 
         (corners, ids, rejected) = self._aruco_detector.detectMarkers(image)
+        print(corners)
 
         if len(corners) > 0:
             cv2.aruco.drawDetectedMarkers(image, corners)
@@ -40,3 +41,12 @@ class Processing:
                     print("Saved calibration frame")
 
         return image
+
+    def get_pose(self, corners):
+        cv2.aruco.estimatePoseSingleMarkers(corners, 0.1524, )
+
+
+
+
+
+
